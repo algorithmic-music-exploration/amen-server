@@ -6,9 +6,17 @@ Functions that the queue can call
 '''
 
 import os
-import shutil
+import json
+from amen.audio import Audio
+from amen.utils import example_audio_file
+from amen.echo_nest_converter import AudioAnalysis
 
 def do_work(filepath):
-    print("This is the filename in the queue")
-    shutil.move(filepath, '/Users/thor/Desktop')
+    audio = Audio(filepath)
+    remix_audio = AudioAnalysis(audio)
+    analysis_filepath = '/Users/thor/Desktop/test.json'
+    with open(analysis_filepath, 'w') as f:
+        json.dump(remix_audio.to_json(), f)
+    os.remove(filepath)
+
     return
