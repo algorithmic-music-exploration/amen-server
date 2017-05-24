@@ -7,16 +7,26 @@ Functions that the queue can call
 
 import os
 import json
+from tempfile import NamedTemporaryFile
 from amen.audio import Audio
 from amen.utils import example_audio_file
 from amen.echo_nest_converter import AudioAnalysis
 
-def do_work(filepath):
+def do_work(filepaths):
+    filepath = filepaths[0]
+    s3_filename = filepaths[1]
     audio = Audio(filepath)
     remix_audio = AudioAnalysis(audio)
-    analysis_filepath = '/Users/thor/Desktop/test.json'
-    with open(analysis_filepath, 'w') as f:
-        json.dump(remix_audio.to_json(), f)
+
+    f = NamedTemporaryFile(delete=False, mode='w')
+    analysis_filepath = f.name
+    json.dump(remix_audio.to_json(), f)
+    f.close()
+
+    # post audio and analysis to S3
+
     os.remove(filepath)
+    os.remove(analysis_filepath)
+
 
     return
