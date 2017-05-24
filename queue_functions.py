@@ -12,6 +12,8 @@ from amen.audio import Audio
 from amen.utils import example_audio_file
 from amen.echo_nest_converter import AudioAnalysis
 
+from uploader import local_upload
+
 def do_work(filepaths):
     filepath = filepaths[0]
     s3_filename = filepaths[1]
@@ -24,9 +26,7 @@ def do_work(filepaths):
     f.close()
 
     # post audio and analysis to S3
-
-    os.remove(filepath)
-    os.remove(analysis_filepath)
-
+    local_upload(filepath)
+    local_upload(analysis_filepath)
 
     return
