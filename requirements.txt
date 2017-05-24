@@ -1,1 +1,2 @@
-amen-server
+redis
+amen

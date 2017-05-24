@@ -1,5 +1,5 @@
 # Unsure if this is correct!
-FROM miniconda:latest
+FROM continuumio/miniconda
 
 # Set the working directory to /app
 WORKDIR /app
@@ -15,4 +15,4 @@ EXPOSE 80
 
 # Run redis, the queue worker, and the tornado app when the container launches!
 ## Need to make this!
-CMD ["python", "startup.py"]
+CMD ["python", "server.py"]
