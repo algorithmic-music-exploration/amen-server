@@ -1,5 +1,6 @@
 # Unsure if this is correct!
-FROM continuumio/miniconda
+# This should allow us to no need to install numpy, etc
+FROM continuumio/anaconda3
 
 # Set the working directory to /app
 WORKDIR /app
@@ -8,6 +9,7 @@ WORKDIR /app
 ADD . /app
 
 # Install any needed packages specified in requirements.txt
+RUN apt-get update && apt-get -y install gcc && rm -rf /var/lib/apt/lists/*
 RUN pip install -r requirements.txt
 
 # Make port 80 available to the world outside this container
