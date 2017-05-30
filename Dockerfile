@@ -8,11 +8,11 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 ADD . /app
 
-# Install gcc for Resampy
-RUN apt-get update && apt-get -y install gcc && rm -rf /var/lib/apt/lists/*
+# Install gcc and libsndfile
+RUN apt-get update && apt-get -y install gcc
+RUN apt-get -y install libsndfile1 && rm -rf /var/lib/apt/lists/*
 
-# Conda magic
-# /opt/conda/lib/python3.6/site-packages
+# Install amen and redis queue
 RUN pip install -r requirements.txt
 
 # Make port 80 available to the world outside this container
