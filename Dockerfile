@@ -10,6 +10,7 @@ ADD . /app
 
 # Install gcc and libsndfile
 RUN apt-get update && apt-get -y install gcc
+RUN apt-get -y install redis-server 
 RUN apt-get -y install libsndfile1 && rm -rf /var/lib/apt/lists/*
 
 # Install amen and redis queue
