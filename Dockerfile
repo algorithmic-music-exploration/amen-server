@@ -2,16 +2,19 @@
 # This should allow us to no need to install numpy, etc
 FROM continuumio/anaconda3
 
+# Install things we need from apt
+RUN apt-get update \
+	&& apt-get -y install gcc \
+	&& apt-get -y install redis-server \
+	&& apt-get -y install libsndfile1 \
+	&& apt-get -y install libav-tools \
+	&& rm -rf /var/lib/apt/lists/*
+
 # Set the working directory to /app
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
 ADD . /app
-
-# Install gcc and libsndfile
-RUN apt-get update && apt-get -y install gcc
-RUN apt-get -y install redis-server 
-RUN apt-get -y install libsndfile1 && rm -rf /var/lib/apt/lists/*
 
 # Install amen and redis queue
 RUN pip install -r requirements.txt
@@ -20,5 +23,4 @@ RUN pip install -r requirements.txt
 EXPOSE 80
 
 # Run redis, the queue worker, and the tornado app when the container launches!
-## Need to make this!
-CMD ["python", "server.py"]
+CMD ["./run.sh"]
