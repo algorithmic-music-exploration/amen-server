@@ -28,10 +28,10 @@ class MainHandler(tornado.web.RequestHandler):
         q = Queue(connection=Redis())
 
         file_body = self.request.files['file'][0]['body']
-        s3_filename = self.request.files['file'][0]['filename']
-        s3_filename = re.sub(r'[^\w\.]', '', s3_filename)
+        target_filename = self.request.files['file'][0]['filename']
+        target_filename = re.sub(r'[^\w\.]', '', s3_filename)
         hash_object = hashlib.md5(s3_filename.encode())
-        s3_filename = hash_object.hexdigest() + s3_filename
+        target_filename = hash_object.hexdigest() + "-" + target_filename
 
         f = NamedTemporaryFile(delete=False)
         filepath = f.name
@@ -39,11 +39,11 @@ class MainHandler(tornado.web.RequestHandler):
         f.close()
 
         # put the file on the queue
-        q.enqueue(do_work, (filepath, s3_filename))
+        q.enqueue(do_work, (filepath, target_filename))
 
         # we'll also need to do some stuff here, around what we return, etc
         # we need to return a link to where to poll for analysis, etc
-        self.write("Async done, file write may or may not be done.  Poll the following URL to see: " + s3_filename)
+        self.write("Async done, file write may or may not be done.  Poll the following URL to see: " + target_filename)
 
 def make_app():
     return tornado.web.Application([
