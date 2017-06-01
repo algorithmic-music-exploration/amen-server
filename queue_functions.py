@@ -28,5 +28,3 @@ def do_work(filepaths):
     # post audio and analysis to S3
     local_upload(filepath)
     local_upload(analysis_filepath)
-
-    return
