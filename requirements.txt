@@ -1,4 +1,4 @@
 redis
 rq
-boto
+boto3
 amen

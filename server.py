@@ -29,8 +29,8 @@ class MainHandler(tornado.web.RequestHandler):
 
         file_body = self.request.files['file'][0]['body']
         target_filename = self.request.files['file'][0]['filename']
-        target_filename = re.sub(r'[^\w\.]', '', s3_filename)
-        hash_object = hashlib.md5(s3_filename.encode())
+        target_filename = re.sub(r'[^\w\.]', '', target_filename)
+        hash_object = hashlib.md5(target_filename.encode())
         target_filename = hash_object.hexdigest() + "-" + target_filename
 
         f = NamedTemporaryFile(delete=False)
@@ -52,5 +52,5 @@ def make_app():
 
 if __name__ == "__main__":
     app = make_app()
-    app.listen(80)
+    app.listen(8888)
     tornado.ioloop.IOLoop.current().start()
