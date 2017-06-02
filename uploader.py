@@ -8,13 +8,14 @@ Uploaders to various cloud services
 import os
 import boto
 
-S3_BUCKET_NAME = "amen-data"
+from s3_config.py import bucket_name
+from s3_secrets.py import secrets
 
 def local_upload(filepath):
     print("Local file at: " + filepath)
     pass
 
-def s3_upload(filepath, destination):
+def s3_upload(filepath):
     ## Unsure if this works, but it looks sane?  Where do we configure secrets?
 
     # This requires that we have the bucket before hand.  Would be nice to make it idempotent.
@@ -25,7 +26,7 @@ def s3_upload(filepath, destination):
     # let's make an secrets.py = s3_secrets, gcp_secrets, etc
 
     s3_connection = boto.connect_s3()
-    bucket = s3_connection.get_bucket(S3_BUCKET_NAME)
+    bucket = s3_connection.get_bucket(bucket_name())
     key = boto.s3.key.Key(bucket, filepath)
     with open(filepath) as f:
         key.send_file(f)
