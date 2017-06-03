@@ -18,6 +18,8 @@ def local_upload(filepath, filename):
 def s3_upload(filepath, filename):
     # We could maybe do idempotent stuff here, in terms of the bucket existing?
     # should we cache the creation of the client?
+    # is this secrets management OK?
+
     aws_secrets = secrets()
     client = boto3.client(
         's3',
