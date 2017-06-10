@@ -1,5 +1,4 @@
-# Unsure if this is correct!
-# This should allow us to no need to install numpy, etc
+# Start with Anaconda, so we don't need to install numpy, etc
 FROM continuumio/anaconda3
 
 # Install things we need from apt
