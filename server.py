@@ -6,6 +6,7 @@ Start of a server for uploading an analyzing audio with Amen
 '''
 
 import re
+import json
 import hashlib
 
 from tempfile import NamedTemporaryFile
@@ -33,6 +34,17 @@ class MainHandler(tornado.web.RequestHandler):
         hash_object = hashlib.md5(target_filename.encode())
         target_filename = hash_object.hexdigest() + "-" + target_filename
 
+        # This target_filename needs to be the complete uploaded paths.  hmm
+# somewhere in MainHandler we should config the uploader, maybe?
+# but psobot thinks the queue should be a seperate container
+# both containers could read the same config file
+# we could make users duplicate code
+# we could have the server return a middle-man URL, that the user then GETs, and that eventually points to the data
+        # let's hard code it for now, and figure out the config later.
+
+        audio_url= 'https://s3-us-west-2.amazonaws.com/amen-data/' + target_filename
+        analysis_url= 'https://s3-us-west-2.amazonaws.com/amen-data/' + target_filename + '.analysis.json'
+
         f = NamedTemporaryFile(delete=False)
         filepath = f.name
         f.write(file_body)
@@ -43,7 +55,8 @@ class MainHandler(tornado.web.RequestHandler):
 
         # we'll also need to do some stuff here, around what we return, etc
         # we need to return a link to where to poll for analysis, etc
-        self.write("Async done, file write may or may not be done.  Poll the following URL to see: " + target_filename)
+        res = {'audio': audio_url, 'analysis': analysis_url}
+        self.write(json.dumps(res))
 
 def make_app():
     return tornado.web.Application([
