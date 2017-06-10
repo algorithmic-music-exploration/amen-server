@@ -19,6 +19,10 @@ from tornado import gen
 from queue_functions import do_work
 
 class MainHandler(tornado.web.RequestHandler):
+    def set_default_headers(self):
+        print("setting headers for CORS")
+        self.set_header("Access-Control-Allow-Origin", "*")
+
     @gen.coroutine
     def get(self):
         self.write("Hello, world")
