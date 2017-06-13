@@ -12,19 +12,20 @@ from amen.audio import Audio
 from amen.utils import example_audio_file
 from amen.echo_nest_converter import AudioAnalysis
 
-from uploader import s3_upload as upload
+def do_work(args):
+    filepath = args[0]
+    audio_filename = args[1]
+    analysis_filename = args[2]
+    upload = args[3]
 
-def do_work(filepaths):
-    filepath = filepaths[0]
-    s3_filename = filepaths[1]
+    # All the work!
     audio = Audio(filepath)
     remix_audio = AudioAnalysis(audio)
 
     f = NamedTemporaryFile(delete=False, mode='w')
     analysis_filepath = f.name
-    analysis_s3_filename = s3_filename + '.analysis.json'
     json.dump(remix_audio.to_json(), f)
     f.close()
 
-    upload(filepath, s3_filename)
-    upload(analysis_filepath, analysis_s3_filename)
+    upload(filepath, audio_filename)
+    upload(analysis_filepath, analysis_filename)

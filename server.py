@@ -18,9 +18,12 @@ from tornado import gen
 
 from queue_functions import do_work
 
+# Change this to the uploader of your choice!
+from uploaders.s3 import get_url
+from uploaders.s3 import upload
+
 class MainHandler(tornado.web.RequestHandler):
     def set_default_headers(self):
-        print("setting headers for CORS")
         self.set_header("Access-Control-Allow-Origin", "*")
 
     @gen.coroutine
@@ -36,29 +39,17 @@ class MainHandler(tornado.web.RequestHandler):
         target_filename = self.request.files['file'][0]['filename']
         target_filename = re.sub(r'[^\w\.]', '', target_filename)
         hash_object = hashlib.md5(target_filename.encode())
-        target_filename = hash_object.hexdigest() + "-" + target_filename
-
-        # This target_filename needs to be the complete uploaded paths.  hmm
-# somewhere in MainHandler we should config the uploader, maybe?
-# but psobot thinks the queue should be a seperate container
-# both containers could read the same config file
-# we could make users duplicate code
-# we could have the server return a middle-man URL, that the user then GETs, and that eventually points to the data
-        # let's hard code it for now, and figure out the config later.
-
-        audio_url= 'https://s3-us-west-2.amazonaws.com/amen-data/' + target_filename
-        analysis_url= 'https://s3-us-west-2.amazonaws.com/amen-data/' + target_filename + '.analysis.json'
+        audio_filename = hash_object.hexdigest() + "-" + target_filename
+        analysis_filename = audio_filename + '.analysis.json'
+        audio_url = get_url(audio_filename)
+        analysis_url = get_url(analysis_filename)
 
         f = NamedTemporaryFile(delete=False)
         filepath = f.name
         f.write(file_body)
         f.close()
 
-        # put the file on the queue
-        q.enqueue(do_work, (filepath, target_filename))
-
-        # we'll also need to do some stuff here, around what we return, etc
-        # we need to return a link to where to poll for analysis, etc
+        q.enqueue(do_work, (filepath, audio_filename, analysis_filename, upload))
         res = {'audio': audio_url, 'analysis': analysis_url}
         self.write(json.dumps(res))
 
