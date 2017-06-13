@@ -1,3 +1,9 @@
+# Amen secrets
+*_secrets.py
+
+# Local redis db files, ndb but let's not check them in
+dump.rdb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
