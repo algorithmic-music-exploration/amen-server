@@ -18,7 +18,7 @@ def test_post():
     analysis_filename = audio_filename + '.analysis.json'
 
     expected = {'analysis': get_url(analysis_filename), 'audio': get_url(audio_filename)}
-    actual = json.reads(handle_post(q, files, get_url, upload))
+    actual = json.loads(handle_post(q, files, get_url, upload))
 
     q.enqueue.assert_called_with(do_work, (ANY, audio_filename, analysis_filename, upload))
     assert expected == actual
