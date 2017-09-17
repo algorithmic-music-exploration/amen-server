@@ -22,6 +22,26 @@ from queue_functions import do_work
 from uploaders.s3 import get_url
 from uploaders.s3 import upload
 
+def handle_post(q, files, make_url, upload_function):
+    file_body = files['file'][0]['body']
+    target_filename = files['file'][0]['filename']
+    target_filename = re.sub(r'[^\w\.]', '', target_filename)
+
+    hash_object = hashlib.md5(target_filename.encode())
+    audio_filename = hash_object.hexdigest() + "-" + target_filename
+    analysis_filename = audio_filename + '.analysis.json'
+    audio_url = get_url(audio_filename)
+    analysis_url = get_url(analysis_filename)
+
+    f = NamedTemporaryFile(delete=False)
+    filepath = f.name
+    f.write(file_body)
+    f.close()
+
+    q.enqueue(do_work, (filepath, audio_filename, analysis_filename, upload))
+    res = {'audio': audio_url, 'analysis': analysis_url}
+    return json.dumps(res)
+
 class MainHandler(tornado.web.RequestHandler):
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
@@ -31,27 +51,13 @@ class MainHandler(tornado.web.RequestHandler):
         self.write("Hello, world")
 
     @gen.coroutine
+    ## This POST should check that we call the Q, and that we return sane JSON
     def post(self):
         # We should clearly not create the Q here, but here we are
         q = Queue(connection=Redis())
+        res = handle_post(q, self.request.files, get_url, upload)
+        self.write(res)
 
-        file_body = self.request.files['file'][0]['body']
-        target_filename = self.request.files['file'][0]['filename']
-        target_filename = re.sub(r'[^\w\.]', '', target_filename)
-        hash_object = hashlib.md5(target_filename.encode())
-        audio_filename = hash_object.hexdigest() + "-" + target_filename
-        analysis_filename = audio_filename + '.analysis.json'
-        audio_url = get_url(audio_filename)
-        analysis_url = get_url(analysis_filename)
-
-        f = NamedTemporaryFile(delete=False)
-        filepath = f.name
-        f.write(file_body)
-        f.close()
-
-        q.enqueue(do_work, (filepath, audio_filename, analysis_filename, upload))
-        res = {'audio': audio_url, 'analysis': analysis_url}
-        self.write(json.dumps(res))
 
 def make_app():
     return tornado.web.Application([
