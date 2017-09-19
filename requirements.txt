@@ -1,4 +1,7 @@
+amen
+boto3
+mock
+pytest
 redis
 rq
-boto3
-amen
+tornado
