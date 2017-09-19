@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/algorithmic-music-exploration/amen-server.svg?branch=master)](https://travis-ci.org/algorithmic-music-exploration/amen-server.svg?branch=master)
+
 # amen-server
 Server to run Amen analysis and return JSON results.
 
