@@ -7,7 +7,6 @@ S3 uploader
 
 import os
 import boto3
-from .s3_secrets import secrets
 
 BUCKET_NAME = 'amen-data'
 BUCKET_REGION = 'us-west-2'
@@ -22,6 +21,8 @@ def get_url(filename):
     return 'https://s3-{}-amazonaws.com/{}/{}'.format(BUCKET_REGION, BUCKET_NAME, filename)
 
 def upload(filepath, filename):
+    ## Terrible import workaroun for travis testing is terrible.
+    from .s3_secrets import secrets
     aws_secrets = secrets()
     client = boto3.client(
         's3',

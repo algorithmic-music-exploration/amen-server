@@ -38,7 +38,7 @@ def handle_post(q, files, make_url, upload_function):
     f.write(file_body)
     f.close()
 
-    q.enqueue(do_work, (filepath, audio_filename, analysis_filename, upload))
+    q.enqueue(do_work, (filepath, audio_filename, analysis_filename, upload_function))
     res = {'audio': audio_url, 'analysis': analysis_url}
     return json.dumps(res)
 
