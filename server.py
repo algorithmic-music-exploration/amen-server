@@ -23,8 +23,7 @@ from queue_functions import make_audio
 from uploaders.s3 import get_url
 from uploaders.s3 import upload
 
-## !! why do we have make_url here?
-def handle_post(q, files, make_url, upload_function, analysis_function):
+def handle_post(q, files, upload_function, analysis_function):
     """
     Helper function for the main POST / analysis request, for easier testing.
     It returns a string of a JSON object with the URLs for the uploaded audio and analysis.
