@@ -18,10 +18,33 @@ def bucket_region():
     return BUCKET_REGION
 
 def get_url(filename):
+    """"
+    Generate the cloud URL for a given filename
+
+    Parameters
+    ----------
+    filename : str
+
+    Returns
+    ------
+    str
+    """
     return 'https://s3-{}-amazonaws.com/{}/{}'.format(BUCKET_REGION, BUCKET_NAME, filename)
 
 def upload(filepath, filename):
-    ## Terrible import workaround for travis testing is terrible.
+    """
+    Upload a file to the configured bucket, with the given filename, and then remove the local file.
+
+    Parameters
+    ---------
+    filepath : str
+        The local filepath of the file.
+
+    filename: str
+        The name of the file on the server.
+    """
+    # This terrible import workaround is for travis testing.
+    # A long-term fix might be to make a test uploader that has no secrets?
     from .s3_secrets import secrets
     aws_secrets = secrets()
     client = boto3.client(
