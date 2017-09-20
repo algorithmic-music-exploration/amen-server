@@ -52,7 +52,6 @@ class MainHandler(tornado.web.RequestHandler):
         self.write("Hello, world")
 
     @gen.coroutine
-    ## This POST should check that we call the Q, and that we return sane JSON
     def post(self):
         # We should clearly not create the Q here, but here we are
         q = Queue(connection=Redis())
