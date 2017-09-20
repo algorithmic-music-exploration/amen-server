@@ -17,12 +17,13 @@ import tornado.web
 from tornado import gen
 
 from queue_functions import do_work
+from queue_functions import make_audio
 
 # Change this to the uploader of your choice!
 from uploaders.s3 import get_url
 from uploaders.s3 import upload
 
-def handle_post(q, files, make_url, upload_function):
+def handle_post(q, files, make_url, upload_function, analysis_function):
     file_body = files['file'][0]['body']
     target_filename = files['file'][0]['filename']
     target_filename = re.sub(r'[^\w\.]', '', target_filename)
@@ -38,7 +39,7 @@ def handle_post(q, files, make_url, upload_function):
     f.write(file_body)
     f.close()
 
-    q.enqueue(do_work, (filepath, audio_filename, analysis_filename, upload_function))
+    q.enqueue(do_work, (filepath, audio_filename, analysis_filename, upload_function, analysis_function))
     res = {'audio': audio_url, 'analysis': analysis_url}
     return json.dumps(res)
 
@@ -55,7 +56,7 @@ class MainHandler(tornado.web.RequestHandler):
     def post(self):
         # We should clearly not create the Q here, but here we are
         q = Queue(connection=Redis())
-        res = handle_post(q, self.request.files, get_url, upload)
+        res = handle_post(q, self.request.files, get_url, upload, make_audio)
         self.write(res)
 
 
