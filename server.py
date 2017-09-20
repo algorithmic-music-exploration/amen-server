@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
-Start of a server for uploading an analyzing audio with Amen
-'''
+"""
+A server for uploading and analyzing audio with Amen
+"""
 
 import re
 import json
@@ -29,6 +29,7 @@ def handle_post(q, files, upload_function, analysis_function):
     It returns a string of a JSON object with the URLs for the uploaded audio and analysis.
 
     Parameters
+    ---------
     q : rq.Queue
         The main queue object to send the analysis work to.
 
