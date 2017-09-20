@@ -21,7 +21,7 @@ def get_url(filename):
     return 'https://s3-{}-amazonaws.com/{}/{}'.format(BUCKET_REGION, BUCKET_NAME, filename)
 
 def upload(filepath, filename):
-    ## Terrible import workaroun for travis testing is terrible.
+    ## Terrible import workaround for travis testing is terrible.
     from .s3_secrets import secrets
     aws_secrets = secrets()
     client = boto3.client(
