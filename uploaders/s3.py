@@ -43,15 +43,10 @@ def upload(filepath, filename):
     filename: str
         The name of the file on the server.
     """
-    # This terrible import workaround is for travis testing.
-    # A long-term fix might be to make a test uploader that has no secrets?
-    from .s3_secrets import secrets
-    aws_secrets = secrets()
-    client = boto3.client(
-        's3',
-        aws_access_key_id=aws_secrets['aws_access_key_id'],
-        aws_secret_access_key=aws_secrets['aws_secret_access_key'],
-    )
-
+    client = boto3.client('s3',
+                          aws_access_key_id='YOUR_AWS_ACCESS_KEY_ID_HERE',
+                          aws_secret_access_key='YOUR_AWS_SECRET_ACCESS_KEY_HERE'
+                          )
     client.upload_file(filepath, bucket_name(), filename)
-    os.remove(filepath)
+    if os.path.isfile(filepath):
+        os.remove(filepath)
