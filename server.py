@@ -89,23 +89,33 @@ class MainHandler(tornado.web.RequestHandler):
         """
         # We should clearly not create the Q here, but here we are
         q = Queue(connection=Redis())
-        res = handle_post(q, self.request.files, get_url, upload, make_audio)
+        res = handle_post(q, self.request.files, upload, make_audio)
         self.write(res)
 
 
-def make_app():
+def make_app(path):
     """
     Helper function to create the server.
 
+    Parameters
+    ---------
+
+    Path : str
+        Determines what the base path (/, /amen, /wombat, etc) of the server is.
+
     Returns
     ------
-    Tornado.Application
+    Tornado.web.Application
     """
     return tornado.web.Application([
-        (r"/", MainHandler),
+        (path, MainHandler),
     ])
 
 if __name__ == "__main__":
-    app = make_app()
-    app.listen(8888)
+    # Debug settings for running locally with docker!  Update as needed for your docker and nginx config.
+    path = '/'
+    port = 80
+
+    app = make_app(path)
+    app.listen(port)
     tornado.ioloop.IOLoop.current().start()
