@@ -15,14 +15,27 @@ I think this is as simple as installing amen and then running the Dockerfile?
 
 # Running on AWS
 Lots of steps here
+- Create a new machine on AWS!  (We recommend Ubuntu Server 16.04)
+	(Thor, you want launch-wizard-3 as your security group) ## Don't commit this!
 - Install Amen on the machine
 - Get the server code on your machine (check out from us!)
-- Add keys and secrets to `s3_secrets.py`
-- Create your buckets and set them to public
+- Install the requirements for the server:  `pip install -r requirements.txt`
+- Add keys and secrets to `s3.py`
+- Create your buckets, set them to public, and update them in s3.py
 - Update the ports and routes in server.py
-- Update MainHandler with proper route
-- Set up NGINX with proper ports and rou, and get it running
-- build and run the Dockerfile
+- Set up NGINX with proper ports and routes, and get it running:
+  - `sudo apt-get update`
+  - `sudo apt-get install nginx`
+  - Add the following lines to `/etc/nginx/sites-enabled/default`:
+  ```
+    location /amen-server {
+        proxy_pass http://localhost:4000/amen-server
+    }
+  ```
+  - start nginx `sudo service nginx start`
+- Install Docker:  `sudo apt-get install docker.io`
+- build the dockerfile:  `sudo docker build -t amen-server-test .` ## should find a way to non-sudo this!
+- run the dockerfile:  `sudo docker run -p 4000:80 amen-server-test`
 - send a test CURL
 
 
