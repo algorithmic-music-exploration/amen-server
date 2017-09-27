@@ -14,29 +14,32 @@ I think this is as simple as installing amen and then running the Dockerfile?
 - Stop docker:  `docker stop $(docker ps -q)`
 
 # Running on AWS
-Lots of steps here
+Lots of steps here!
 - Create a new machine on AWS!  (We recommend Ubuntu Server 16.04)
-	(Thor, you want launch-wizard-3 as your security group) ## Don't commit this!
-- Install Amen on the machine
+- Make sure port 80 is open to everyone.
+- Install Amen on the machine - see the main repository for how to do this.
 - Get the server code on your machine (check out from us!)
 - Install the requirements for the server:  `pip install -r requirements.txt`
+
 - Add keys and secrets to `s3.py`
 - Create your buckets, set them to public, and update them in s3.py
-- Update the ports and routes in server.py
+
+- Update the routes in server.py:  we recommend `amen-server`, as that's what the below nginx config uses.
 - Set up NGINX with proper ports and routes, and get it running:
   - `sudo apt-get update`
   - `sudo apt-get install nginx`
-  - Add the following lines to `/etc/nginx/sites-enabled/default`:
+  - Add the following lines to `/etc/nginx/sites-enabled/default`, right under `listen [::]:80 default_server;`:
   ```
     location /amen-server {
-        proxy_pass http://localhost:4000/amen-server
+        proxy_pass http://localhost:4000/amen-server;
     }
   ```
   - start nginx `sudo service nginx start`
+
 - Install Docker:  `sudo apt-get install docker.io`
 - build the dockerfile:  `sudo docker build -t amen-server-test .` ## should find a way to non-sudo this!
 - run the dockerfile:  `sudo docker run -p 4000:80 amen-server-test`
-- send a test CURL
+- send a test CURL:  `curl -X POST -F "file=@amen.mp3;type=audio/mpeg" http://<your-aws-url>/amen-server`
 
 
 
