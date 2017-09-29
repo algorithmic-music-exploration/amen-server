@@ -41,6 +41,10 @@ Lots of steps here!
 - run the dockerfile:  `sudo docker run -p 4000:80 amen-server-test`
 - send a test CURL:  `curl -X POST -F "file=@amen.mp3;type=audio/mpeg" http://<your-aws-url>/amen-server`
 
+## Some Notes On Server Power
+Amen is computationally heavy, and is a Python library.  It could be faster.  If you want to run an Amen sever in a production environment, you may need some fairly serious machines to make it fast.
+
+The mean processing time for a 3:30 song on an AWS c4 machine is 16.3 seconds.  It is 15.4 seconds on the author's 2015 MacBook Pro.  It was upwards of two minutes on an AWS free tier t2.micro. Plan accordingly.
 
 
 ## Don't forget to talk about bucket policies!
