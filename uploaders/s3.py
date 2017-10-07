@@ -29,7 +29,7 @@ def get_url(filename):
     ------
     str
     """
-    return 'https://s3-{}-amazonaws.com/{}/{}'.format(BUCKET_REGION, BUCKET_NAME, filename)
+    return 'https://s3-{}.amazonaws.com/{}/{}'.format(BUCKET_REGION, BUCKET_NAME, filename)
 
 def upload(filepath, filename):
     """
