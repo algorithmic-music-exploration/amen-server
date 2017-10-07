@@ -27,6 +27,7 @@ Server to run Amen analysis and return JSON results.
   ```
     location /amen-server {
         proxy_pass http://localhost:4000/amen-server;
+        client_max_body_size 8M;
     }
   ```
 
