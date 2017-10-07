@@ -5,7 +5,7 @@ Server to run Amen analysis and return JSON results.
 
 # Running Locally
 - Install amen
-- Add keys and secrets to `s3.py`
+- Add keys and secrets to `uploaders/s3.py`
 - Create your buckets and set them to public (link to aws doc)
 - Build the dockerfile:  `docker build -t amen-server-test .`
 - Run the dockerfile:  `docker run -p 4000:80 amen-server-test`
@@ -15,29 +15,27 @@ Server to run Amen analysis and return JSON results.
 # Running on AWS
 - Create a new machine on AWS!  (We recommend Ubuntu Server 16.04)
 - Make sure port 80 is open to everyone.
-- Install Amen on the machine - see the main Amen repository for how to do this.
 - Get the server code on your machine - we recommend checking it out from Github.
-- Install the requirements for the server:  `pip install -r requirements.txt`
-
-- Add keys and secrets to `s3.py`
-- Create your buckets, set them to public, and update them in s3.py
-
+- Create your buckets, set them to public, and update them in `uploaders/s3.py`
+- Add your AWS keys and secrets to `uploaders/s3.py`
 - Update the path for the Tornado webserver in server.py:  we recommend `/amen-server`, as that's what the below nginx config uses.
 - Set up NGINX with proper ports and routes, and get it running:
   - `sudo apt-get update`
   - `sudo apt-get install nginx`
-  - Add the following lines to `/etc/nginx/sites-enabled/default`, right under `listen [::]:80 default_server;`:
+  - Add the following lines to `/etc/nginx/sites-enabled/default`, under `listen [::]:80 default_server;`:
+
   ```
     location /amen-server {
         proxy_pass http://localhost:4000/amen-server;
     }
   ```
-  - start nginx `sudo service nginx start`
 
+  - start nginx `sudo service nginx start`
 - Install Docker:  `sudo apt-get install docker.io`
-- build the dockerfile:  `sudo docker build -t amen-server-test .` ## should find a way to non-sudo this!
-- run the dockerfile:  `sudo docker run -p 4000:80 amen-server-test`
-- send a test CURL:  `curl -X POST -F "file=@amen.mp3;type=audio/mpeg" http://<your-aws-url>/amen-server`
+- Add the current user (`ubuntu`) to the docker group, so we can run without sudo: `sudo gpasswd -a $USER docker`
+- Build the dockerfile:  `docker build -t amen-server-test .`
+- Run the dockerfile:  `docker run -p 4000:80 amen-server-test`
+- Send a test CURL:  `curl -X POST -F "file=@amen.mp3;type=audio/mpeg" http://<your-aws-url>/amen-server`
 
 ## Some Notes On Performance
 Amen is computationally heavy, and is a Python library.  It could be faster. The mean processing time for a 3:30 audio track on a AWS free-tier t2.micro is 20.5 seconds - that drops to 16.4 seconds on an AWS c4 machine.  Plan accordingly.
