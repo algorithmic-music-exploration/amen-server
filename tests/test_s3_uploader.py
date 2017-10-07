@@ -10,7 +10,7 @@ from uploaders.s3 import upload
 
 def test_get_url():
     filename = "faux-filename"
-    assert get_url(filename) == "https://s3-us-west-2-amazonaws.com/amen-data/{}".format(filename)
+    assert get_url(filename) == "https://s3-us-west-2.amazonaws.com/amen-data/{}".format(filename)
 
 def test_upload():
     c = Mock()
