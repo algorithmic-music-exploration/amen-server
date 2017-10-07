@@ -26,7 +26,7 @@ def make_audio(filepath):
     AudioAnalysis
     """
     audio = Audio(filepath)
-    return AudioAnalysis(filepath)
+    return AudioAnalysis(audio)
 
 def do_work(args):
     """
