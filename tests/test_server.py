@@ -7,7 +7,7 @@ from queue_functions import do_work
 from server import handle_post
 
 # The S3 URL-maker is the default.
-# if you change the default in server.py, you'll need to change it here too
+# If you change the default in server.py, you'll need to change it here too
 from uploaders.s3 import get_url
 
 def faux_upload():
